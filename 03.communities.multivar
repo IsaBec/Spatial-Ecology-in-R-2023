@@ -1,0 +1,40 @@
+###use camara trap info to look at animal movement
+library(vegan)
+data(dune)  #show data
+dune ##see the data
+##or use head, shows only first 6 rows
+head(dune)
+
+#tail can also be used
+
+#decorana detrended correspondence analysis
+#another methods nonlinear multivariate scaling, mds, correspondence analysis-- all multivariate analysis
+decorana(dune)
+ord <-decorana(dune)
+ord
+##values interested is length of x-axis
+##eg 1st axus DCA1 3.7004
+
+##length of each
+ldc1=3.7001
+ldc2=3.1166
+ldc3=1.30055
+ldc4=1.47888
+
+total= ldc1+ldc2+ldc3+ldc4
+
+##percentage that each takes of the axis but when you plot it already knows which takes up the majority
+pldc1=ldc1 * 100/total
+pldc2=ldc2 * 100/total
+pldc3=ldc3 * 100/total
+pldc4=ldc4 * 100/total
+
+pldc1
+pldc2
+
+pldc1+pldc2  ##these two axis encompass 71% of data 
+
+plot(ord) ##see final multivar space
+##cannot see variable analysis with the table
+
+###camera trap info, time overlap of species
