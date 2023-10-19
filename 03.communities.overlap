@@ -1,0 +1,47 @@
+# camera traps data
+# data from Kerinci-Seblat National Park in Sumatra, Indonesia (Ridout and Linkie, 2009)
+# Ridout MS, Linkie M (2009). Estimating overlap of daily activity patterns from camera trap data. 
+# Journal of Agricultural, Biological, and Environmental Statistics, 14(3), 322–337.
+##relation of species in time, overlap (space multivariate analysis)
+
+library(overlap)
+data(kerinci)
+
+# tiger
+# The unit of time is the day, so values range from 0 to 1. 
+head(kerinci)
+
+summary(kerinci)
+#3 columns, zone, species, and time
+tiger <- kerinci[kerinci$Sps=="tiger", ] ##comma closes queary
+
+summmary(tiger)
+
+##circular time, to make it from linear to round
+# The package overlap works entirely in radians: fitting density curves uses trigonometric functions (sin, cos, tan),
+# so this speeds up simulations. The conversion is straightforward: kerinci$Time * 2 * pi
+kerinci$Timerad <- kerinci$Time * 2 * pi
+  head(kerinci)  ##see extra column
+tiger <- kerinci[kerinci$Sps=="tiger", ]   
+head(tiger) ##see additional column
+
+plot(tiger$Timerad)
+
+##or create new variable for time of tiger, kernel densities = amount of time in an axis
+
+timetig <- tiger$Timerad
+densityPlot(timetig, rug=TRUE)  #rug to smooth line
+
+##another species .. excercise: select only the data on the macaque individuals
+##use summary(kerinci) to see monkey name: macaque
+maca <- kerinci[kerinci$Sps=="macaque", ]   
+head(maca)
+
+# selecting the time for the macaque
+timemaca <- maca$Timerad
+densityPlot(timemaca, rug=TRUE)
+
+##check if there is a time where tiger can eat macaque, the two can meet
+#overlap, overlapping kernel densities
+overlapPlot(timetig, timemaca)
+##grey part is overlap
