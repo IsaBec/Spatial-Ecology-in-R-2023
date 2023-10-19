@@ -1,4 +1,4 @@
-###use camara trap info to look at animal movement
+
 library(vegan)
 data(dune)  #show data
 dune ##see the data
@@ -37,4 +37,4 @@ pldc1+pldc2  ##these two axis encompass 71% of data
 plot(ord) ##see final multivar space
 ##cannot see variable analysis with the table
 
-###camera trap info, time overlap of species
+
