@@ -28,3 +28,17 @@ im.list() ###function for lists
 # blue band
 b2 <- im.import("sentinel.dolomites.b2.tif") # b2 is the blue wavelength  ##"" bc its saved like that in r
 b2    ##get info on file, raster- image
+
+###Lec 10
+##earth geoid shape ##not a sphere
+###use ellipsoid surface as reference of geoid surface
+
+##continued
+
+clb <-colorRampPalette(c("dark grey", "grey", "light grey"))(100)
+plot(b2, col=clb)
+
+##import the green band from Sentinel-2 (band 3)
+b3 <- im.import("sentinel.dolomites.b3.tif") # b2 is the green wavelength
+b3
+plot(b3, col=clb)
