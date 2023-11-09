@@ -45,8 +45,54 @@ plot(b3, col=clb)
 
 
 ######
-class missed
+##class missed
+##
+##repeated below caught up
+##copied
+# stack images all together
+stacksent <- c(b2, b3, b4, b8)
 
+plot(stacksent, col = cl)
+
+# to plot just one layer from the stack we can use the number of the "element" (layer)
+plot(stacksent[[4]], col = cl)
+
+# Let's put all the images in a single graph
+# EXERCISE: Plot in a multiframe the bands with different color ramps
+par(mfrow=c(2,2))
+
+cl2 <- colorRampPalette(c("dark blue", "blue", "light blue")) (100)
+cl3 <- colorRampPalette(c("dark green", "green", "light green")) (100)
+cl4 <- colorRampPalette(c("firebrick4", "firebrick", "red")) (100)
+cl8 <- colorRampPalette(c("orangered", "gold", "yellow")) (100)
+
+par(mfrow = c(2,2))
+plot(b2, col = cl2)
+plot(b3, col = cl3)
+plot(b4, col = cl4)
+plot(b8, col = cl8)
+
+
+############################################################
+###### RGB space #######
+############################################################
+# if the components are 3, we can use only 3 bands per time
+# b2 = B; b3 = G; b4 = R; b8 = NIR (near infrared)
+# then we associate each band to a specific component
+
+#stacksent : 
+#band2 blue element 1, stacksent[[1]]
+#band3 green element 2, stacksent[[2]]
+#band4 red element 3, stacksent[[3]]
+#band8 nir element 4, stacksent[[4]]
+im.plotRGB(stacksent, r=3, g=2, b=1)
+
+#we can change the position of the NIR, putting in the red component or in the green component
+# (the highest amount of informations are given by nir)
+im.plotRGB(stacksent, r=4, g=3, b=2) #you can see two types of vegetation: the dark part is forest, de light red is grassland
+im.plotRGB(stacksent, r=3, g=4, b=2) #everything that is becoming fluorescent green is vegetation; bare soil is in violet
+#final composition in which we can use the NIR: moving it from the green component to the blue one
+im.plotRGB(stacksent, r=3, g=2, b=4) #everything reflecting the nir will become blue; cities in yellow
 
 
 
