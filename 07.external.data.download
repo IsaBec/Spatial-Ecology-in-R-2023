@@ -1,0 +1,41 @@
+##External data
+
+library(terra)
+
+#set the working directory based on your path:
+##setwd("/Users/alvarobecdach/Downloads")
+
+##my case 
+setwd("/Users/alvarobecdach/Documents/Spatial Ecology in R")
+
+naja2003 <-rast("najafiraq_etm_2003140_lrg.jpeg")  ##same thing as im.import() 
+
+##previously using im.plotRGB 
+##now
+plotRGB(naja2003, r=1,g=2, b=3)
+
+##second image 2023 of same place
+naja2023 <-rast("najafiraq_oli_2023219_lrg.jpeg") 
+plotRGB(naja2023, r=1,g=2, b=3)
+
+par(mfrow=c(2,1))
+plotRGB(naja2003, r=1,g=2, b=3)
+plotRGB(naja2023, r=1,g=2, b=3)
+
+##multitemporal change detection
+najadif=naja2003[[1]]-naja2023[[1]]
+cl <- colorRampPalette(c("brown", "grey", "orange"))(100)
+plot(najadif, col=cl)
+
+###own example Quito urbanization 1986-2019
+
+quito1986 <-rast("quito432_tm5_1986259_lrg.jpeg")
+quito2019 <-rast("quito543_oli_2019237_lrg.jpeg")
+
+par(mfrow=c(2,1))
+plotRGB(quito1986, r=2, g=1, b=3)
+plotRGB(quito2019, r=2, g=1, b=3)    ### see better changes it is infrared 1,2,3 green 3,2,1 is blue 
+
+quitodif=quito1986[[1]]-quito2019[[1]]
+clq <- colorRampPalette(c("brown", "orange","blue"))(100)
+plot(quitodif, col=clq)
