@@ -40,4 +40,18 @@ plot(g2015,col=clg)
 
 ##stack images-data
 stackg <-c(g2000,g2005,g2010,g2015)
-plot(stackg, col=
+plot(stackg, col=clg)
+
+#Exercise: make the diff bt 2000 and 2005 (first and the final elements of the stack)
+difg <-stackg[[1]]-stackg[[4]]
+##or difg <- g2000-g2015
+plot(difg,col=cldif)
+##shows high loss in greenland in the middle
+
+
+##all images in stack together, but now first band will be placed in red, second (2005) placed in green and 2010 in blue
+##Exercise: make RGB plot using diff years
+im.plotRGB(stackg, r=1, g=2,b=3)
+
+
+
