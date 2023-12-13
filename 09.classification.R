@@ -67,7 +67,7 @@ p1 + p2
 
 
 
-######PEDRITO'S CODE
+######PEDRITO'S CODE + my notes
 library(terra)
 library(imageRy)
 library(ggplot2)
@@ -86,20 +86,20 @@ plot(sunc)
 m1992 <- im.import("matogrosso_l5_1992219_lrg.jpg")
 m2006 <- im.import("matogrosso_ast_2006209_lrg.jpg")
 
-m1992c <- im.classify(m1992, num_clusters=2)
+m1992c <- im.classify(m1992, num_clusters=2)  ###cluster 1 is forest, cluster 2 is agriculture in my case check picture to see
 m2006c <- im.classify(m2006, num_clusters=2)
 
 plot(m1992c)
 plot(m2006c)
 
+##see freq of each cluster
 freq1992 <- freq(m1992c)
 freq1992
-
-
 
 freq2006 <- freq(m2006c)
 freq2006
 
+### this is percentage of each cluster
 tot1992 = ncell(m1992)
 perc1992 = freq1992 * 100 / tot1992
 perc1992
@@ -108,6 +108,7 @@ tot2006 = ncell(m2006)
 perc2006 = freq2006 * 100 / tot2006
 perc2006
 
+### create vectors with info
 cover <- c("forest","agriculture")
 perc1992 <- c(83.08, 16.91)
 perc2006 <- c(45.31, 54.69)
@@ -115,6 +116,7 @@ perc2006 <- c(45.31, 54.69)
 p <- data.frame(cover, perc1992, perc2006)
 p
 
+### create bargraphs
 p1 <- ggplot(p, aes(x=cover, y=perc1992, color=cover)) + geom_bar(stat="identity", fill="white")
 p2 <- ggplot(p, aes(x=cover, y=perc2006, color=cover)) + geom_bar(stat="identity", fill="white")
 p1+p2
