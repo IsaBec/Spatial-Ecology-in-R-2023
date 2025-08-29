@@ -1,4 +1,6 @@
 ### This is a script to visualize satellite data
+# colors are representing the amount of reflectance of a pixel in a certain wavelenght
+# plants use mostly red light to carry out photosynthesis
 
 library(devtools) # packages in R are also called libraries
 
@@ -22,6 +24,18 @@ im.list() ###function for lists
 ##--taken in the dolomites (place), b2.etc- means diff bands-- b1 us coastal aerosol, b2 blue, b3 green,
         ##(how much they reflect in that wavelength etc
 ##four bands of the same resolution 
+# to make measuraments you use ellipsoids
+# different ellipsoids are used in different regions to match the geoid perfectly
+# datum = ellipsoid and where it is put [ex. Clark + Italy]
+
+# the latitude is measured as the angle beetween a line perpendicular to the surface of the Earth and the equator
+# if Earth is rapresented as a sphere the perpendicular line will intersect the center, but this is not the case for the ellipsoid
+# when you provide lat and long you should also provide the datum you are using
+
+# the world geodetic system (WGS) 84 is the one we are using.
+
+# UTM is a map projection (way to represent the spherical Earth on a plane) system to assign cordinates to location to locations on the Earth surface
+# if you know the initil reference system you can "translate it" to another one
 
 
 # importing data
@@ -138,4 +152,8 @@ im.plotRGB(stacksent, r=3, g=2, b=4)        ## blue veg reflecting IR (bc more i
 ##see if info is correlated with each other (bands) see how pixels relate to each other
 ##pairs - scatterplot matrices 
 pairs(stacksent)        ## its gonna be 6 4x3)/2 idk 
+
+#you obtain the graphs and the Pierson correlation coefficient.
+#all the visible bans are highly correlated to each otehr
+#if you use the nir, the values of correlation are lower, which means that this band is adding additional informations.
 
