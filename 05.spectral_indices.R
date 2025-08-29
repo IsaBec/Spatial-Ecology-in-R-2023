@@ -79,6 +79,8 @@ plot(dvi2006, col=cl)
 ndvi1992 = (m1992[[1]] - m1992[[2]]) / (m1992[[1]] + m1992[[2]])
 ##or ndvi1992=dvi1992/(m1992[[1]] + m1992[[2]])
 plot(ndvi1992, col=cl)
+#you can see the new range is from -1 to 1 so it can be compared to any kind of image since the range will be the same
+#the dark red parts indicate the healthy vegetation
 
 ##2006
 ndvi2006 = (m2006[[1]] - m2006[[2]]) / (m2006[[1]] + m2006[[2]])
