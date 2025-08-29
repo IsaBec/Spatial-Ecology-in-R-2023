@@ -1,5 +1,7 @@
 
 library(vegan)
+#ordination methods are basically multivariate analysis
+#there are different datasets:
 data(dune)  #show data
 dune ##see the data
 ##or use head, shows only first 6 rows
@@ -33,6 +35,8 @@ pldc1
 pldc2
 
 pldc1+pldc2  ##these two axis encompass 71% of data 
+
+#from the table it is almost impossible to understand the corrispondence between the species, therefort I use a plot with only 2 axis
 
 plot(ord) ##see final multivar space
 ##cannot see variable analysis with the table
