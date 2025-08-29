@@ -8,6 +8,8 @@ im.list("matogrosso_l5_1992219_lrg.jpg")  ###doesnt work
 
 m1992 <- im.import("matogrosso_l5_1992219_lrg.jpg")
 ## bands: 1=NIR, 2=red, 3= green
+#it will make directly the plot of the image, with a 30m pixel resolution
+#this image has been processed
 
 im.plotRGB(m1992, r=1, g=2, b=3)
 im.plotRGB(m1992, 2, 1, 3) ##green infrared
@@ -41,7 +43,19 @@ plot(m1992[[1]])
 
 ##diff bt 1st band in 1992 and second band of 1992
 ##dvi= NIR-RED
-##bands 1=nir 2=red 3=green
+##the range of reflectance is from 0 to 255: this is because reflectance is the ratio between the incident flux of energy and the reflected flux
+##but this would lead to float numbers and we want to avoid them because they require space in our computer.
+##therefore, we use bits: 1 bit = or 0 or 1: the BINARY CODE
+##we can use binary code to build every information in the computer
+##With 1 bit you have 2 information: 0 or 1.
+##With 2 bits you have 4 information: 00, 01, 10, 11
+##With 3 bits you have 8 info
+##with 4 bits you have 16 info
+##most of the images are storaged in 8 BIT: they are a lot of information but reducing the storaging space required.
+
+##a tree is reflecting a lot in the NIR and absorbing a lot in the RED
+##DVI = DIFFERENCE VEGETATION INDEX ---> you make the difference between the total bits and the REDs (ex. 255-10 = 245 is the DVI of a living plant; 255-
+##DVI = difference between NIR and RED
 
 dvi1992=m1992[[1]]-m1992[[2]]
 plot(dvi1992)
