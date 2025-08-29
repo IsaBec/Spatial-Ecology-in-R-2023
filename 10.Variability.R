@@ -13,6 +13,10 @@ sent <- im.import("sentinel.png")
 im.plotRGB(sent, r=1, g=2, b=3)
 im.plotRGB(sent, r=2, g=1, b=3)  #veg in green bare soil/rocks violet
 
+#we're going to calculate the variability. 
+#the STD can be calculate only on one variable.
+#but in this case we have 3 variables: the reflectance of the red, of the green and of the NIR
+
 nir <- sent[[1]]
 plot(nir)
 
