@@ -40,6 +40,7 @@ head(maca)
 # selecting the time for the macaque
 timemaca <- maca$Timerad
 densityPlot(timemaca, rug=TRUE)
+# the macaque is quite different from the tiger: the tiger has two peaks, whereas the macaque concentrates most of the data in the central part of the day
 
 ##check if there is a time where tiger can eat macaque, the two can meet
 #overlap, overlapping kernel densities
