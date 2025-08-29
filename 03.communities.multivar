@@ -36,7 +36,7 @@ pldc2
 
 pldc1+pldc2  ##these two axis encompass 71% of data 
 
-#from the table it is almost impossible to understand the corrispondence between the species, therefort I use a plot with only 2 axis
+#from the table it is almost impossible to understand the correspondence between the species, therefort I use a plot with only 2 axis
 
 plot(ord) ##see final multivar space
 ##cannot see variable analysis with the table
