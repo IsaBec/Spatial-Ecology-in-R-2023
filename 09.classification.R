@@ -1,5 +1,13 @@
 ###missed class
 ### Classifying satellite images and estimate the amount of change
+#grouping pixels can be used to represent the final class on a graph with red, infrared and so on on the axes.
+#amount of pixels and the amount of proportion related to that.
+#vegetation area are reflective a lot in the infrared area (not in the red since they are doing photosynthesis)
+#water absorbs all the infrared light and may reflect red
+#these pixels are called TRAINING SITES, something that can explain to the software which clusters (or classes) are present.
+#if we want to classify a pixel, without knowing its class, we must use the reflectance of the pixel
+#and use the SMALLEST DISTANCE FROM THE NEAREST CLASS, to estimate to which class the pixel is most probable to be part of.
+#this way we can classify every pixel in the image by class.
 
 library(terra)
 library(imageRy)
@@ -13,10 +21,17 @@ im.list()
 sun <- im.import("Solar_Orbiter_s_first_views_of_the_Sun_pillars.jpg")
 
 sunc <- im.classify(sun, num_clusters=3)
+sunc
+plot(sunc[[1]])
+#the third class is the class with the highest energy, but it could be the class 1 or 2 or 3
+plot(sun) #you can tell that the top right part is the one with the highest energy
+plot(sunc) # => the highest energy is the third class
 
 # classify satellite data
-
+ #from the original we can see that the class number 3 is the class with the highest energy level
+        #we now apply this to the image of mato grosso to see if there is a change.
 im.list()
+
 
 m1992 <- im.import("matogrosso_l5_1992219_lrg.jpg")
 m2006 <- im.import("matogrosso_ast_2006209_lrg.jpg")
@@ -67,7 +82,7 @@ p1 + p2
 
 
 
-######PEDRITO'S CODE + my notes
+######PEDRITO'S CODE + my notes (MISSED CLASS)
 library(terra)
 library(imageRy)
 library(ggplot2)
@@ -121,7 +136,12 @@ p1 <- ggplot(p, aes(x=cover, y=perc1992, color=cover)) + geom_bar(stat="identity
 p2 <- ggplot(p, aes(x=cover, y=perc2006, color=cover)) + geom_bar(stat="identity", fill="white")
 p1+p2
 
+       #one plot (p1) related to the 1992 and the other related to the 2006 image. 
+        #Then to merge them together we have to use the function patchwork()
 
+        #the problem now we have the problem of having two different scales in the two different images.
+        #to have the same scale in each image graph we have to use add the specification to each line --> +ylim(c(0,100))
+        #in this way the range in the y axis will be the same.
 
 p1 <- ggplot(p, aes(x=cover, y=perc1992, color=cover)) + geom_bar(stat="identity", fill="white") + ylim(c(0,100))
 p2 <- ggplot(p, aes(x=cover, y=perc2006, color=cover)) + geom_bar(stat="identity", fill="white") + ylim(c(0,100))
