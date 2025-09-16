@@ -1,0 +1,342 @@
+#analyze NDVI, FCOVER of Ecuador
+#The aim of this project is to analyze changes in vegetation cover and health 
+in Ecuador, with a focus on the city of Quito and its surroundings.       
+install.packages("terra")       
+install.packages("patchwork")  
+install.packages("ggplot2")     
+install.packages("viridis")    
+      
+
+
+library(terra)
+library(patchwork)  
+library(ggplot2)    
+library(viridis)
+
+#setting working directory
+setwd("C:/Users/DELL/OneDrive/Documents/Spatial")
+
+#-------------------------------------
+#importing 1999 raster
+#------------------------------------- 
+
+newFCOV1999 <- rast("c_gls_FCOVER_199902100000_GLOBE_VGT_V2.0.2__FCOVER.tif")
+summary(newFCOV1999)
+
+# Apply scale factor
+FCOV1999_frac <- newFCOV1999 * 0.004
+
+
+# Convert raster to data.frame for ggplot
+df1999 <- as.data.frame(FCOV1999_frac, xy = TRUE)
+names(df1999)[3] <- "FCOVER"  # ensure the value column is named FCOVER
+
+# Plot
+
+names(df1999)[1:2] <- c("Longitude", "Latitude")
+
+fcover1999plot <- ggplot(df1999, aes(x = Longitude, y = Latitude, fill = FCOVER)) +
+  geom_raster() +
+  scale_fill_viridis(option = "mako", direction = -1, limits = c(0, 1)) +  # reverse colors if desired
+  coord_fixed() +
+  theme_minimal() +
+  labs(title = "FCOVER 1999 - Ecuador", fill = "FCOVER")
+
+#-------------------------------------
+#importing 2020 raster
+#------------------------------------- 
+
+newFCOV2020 <- rast("c_gls_FCOVER-RT0_202002100000_GLOBE_PROBAV_V2.0.1__FCOVER.tif")
+summary(newFCOV2020)
+
+# Apply scale factor
+FCOV2020_frac <- newFCOV2020 * 0.004
+
+
+# Convert raster to data.frame for ggplot
+df2020 <- as.data.frame(FCOV2020_frac, xy = TRUE)
+names(df2020)[3] <- "FCOVER"  # ensure the value column is named FCOVER
+
+
+# Plot
+
+names(df2020)[1:2] <- c("Longitude", "Latitude")
+
+fcover2020plot <- ggplot(df2020, aes(x = Longitude, y = Latitude, fill = FCOVER)) +
+  geom_raster() +
+  scale_fill_viridis(option = "mako", direction = -1, limits = c(0, 1)) +  # reverse colors if desired
+  coord_fixed() +
+  theme_minimal() +
+  labs(title = "FCOVER 2020 - Ecuador", fill = "FCOVER")
+
+
+#visualizing both plots
+combined_plot <- fcover1999plot + fcover2020plot
+combined_plot
+
+
+#----------------------------
+  # # FCOVER change: 1999 -2020
+#----------------------------
+
+#Ensure same Cooridnate reference system (for overlap)
+FCOV1999_proj <- project(FCOV1999_frac, FCOV2020_frac)
+
+# Crop to overlapping extent
+common_extent <- intersect(ext(FCOV1999_proj), ext(FCOV2020_frac))
+FCOV1999_crop <- crop(FCOV1999_proj, common_extent)
+FCOV2020_crop <- crop(FCOV2020_frac, common_extent)
+
+# Resample 1999 raster to match 2020 resolution
+FCOV1999_resampled <- resample(FCOV1999_crop, FCOV2020_crop, method="bilinear")
+
+# Compute difference: 1999 - 2020
+diff1999_2020 <- FCOV1999_resampled - FCOV2020_crop
+
+# Convert to data.frame for ggplot
+df_diff <- as.data.frame(diff1999_2020, xy = TRUE)
+names(df_diff)[3] <- "FCOVER_DIFF"
+
+# Plot
+ggplot(df_diff, aes(x = x, y = y, fill = FCOVER_DIFF)) +
+  geom_raster() +
+  scale_fill_viridis(option = "magma", direction = 1) +
+  coord_fixed() +
+  theme_minimal() +
+  labs(title = "Forest Cover Change: 1999 − 2020",
+       x = "Longitude", y = "Latitude",
+       fill = "Δ FCOVER")
+
+
+
+#-------------------------------------
+# Using a small area of Quito and surrounding areas (10,000 km^2)
+#-------------------------------------
+
+###### Cropping rasters
+# Define extent
+quito_extent <- ext(-78.9178, -78.0178, -0.6307, 0.2693)
+
+# Crop rasters
+FCOV1999_quito <- crop(FCOV1999_frac, quito_extent)
+FCOV2020_quito <- crop(FCOV2020_frac, quito_extent)
+
+# Convert to data.frames for ggplot
+df1999 <- as.data.frame(FCOV1999_quito, xy = TRUE)
+names(df1999)[3] <- "FCOVER"
+
+df2020 <- as.data.frame(FCOV2020_quito, xy = TRUE)
+names(df2020)[3] <- "FCOVER"
+
+# Plot 1999
+p1999 <- ggplot(df1999, aes(x = x, y = y, fill = FCOVER)) +
+  geom_raster() +
+  scale_fill_viridis(option = "mako", direction = -1,limits = c(0, 1)) +
+  coord_fixed() +
+  theme_minimal() +
+  labs(title = "FCOVER 1999 - Quito", x = "Longitude", y = "Latitude", fill = "FCOVER")
+
+# Plot 2020
+p2020 <- ggplot(df2020, aes(x = x, y = y, fill = FCOVER)) +
+  geom_raster() +
+  scale_fill_viridis(option = "mako", direction = -1,limits = c(0, 1)) +
+  coord_fixed() +
+  theme_minimal() +
+  labs(title = "FCOVER 2020 - Quito", x = "Longitude", y = "Latitude", fill = "FCOVER")
+
+# Combine plots side by side
+p1999 + p2020
+
+#-------------------------------------
+# Difference of FCOVER for cropped Quito rasters (2020 - 1999)
+#-------------------------------------
+
+diff_quito <- FCOV2020_quito - FCOV1999_quito
+
+# Convert to data.frame for ggplot
+df_diff_quito <- as.data.frame(diff_quito, xy = TRUE)
+names(df_diff_quito)[3] <- "FCOVER_DIFF"
+
+# Plot
+ggplot(df_diff_quito, aes(x = x, y = y, fill = FCOVER_DIFF)) +
+  geom_raster() +
+  scale_fill_viridis(option = "magma", direction = 1, limits = c(-1, 1)) +
+  coord_fixed() +
+  theme_minimal() +
+  labs(title = "Forest Cover Change: 1999 → 2020",
+       x = "Longitude", y = "Latitude",
+       fill = "Δ FCOVER")
+
+
+#-----------------------------
+# Seeing the decrease, no change, increase of each pixel
+#-----------------------------
+
+# Define 3 classes manually:
+# 1 = Decrease, 2 = No Change, 3 = Increase
+diff_quito_class <- classify(diff_quito,
+                             rcl = matrix(c(-Inf, -0.0001, 1,
+                                            -0.0001, 0.0001, 2,
+                                            0.0001, Inf, 3), ncol=3, byrow=TRUE))
+
+# Convert to data.frame for ggplot
+class_diff_df <- as.data.frame(diff_quito_class, xy = TRUE)
+colnames(class_diff_df)[3] <- "ChangeClass"
+
+# Plot FCOVER change with pixels
+ggplot_class_diff <- ggplot(class_diff_df, aes(x = x, y = y, fill = as.factor(ChangeClass))) +
+  geom_raster() +
+  scale_fill_manual(values = c("1" = "#240032",  # Decrease
+                               "2" = "purple",  # No Change
+                               "3" = "orange"), # Increase
+                    name = "Class", 
+                    labels = c("Decrease", "No Change", "Increase")) +
+  labs(x = "Longitude", y = "Latitude", title = "Forest Cover Change: 1999 → 2020 - Quito") +
+  theme(axis.text = element_text(size = 7),
+        axis.title = element_text(size = 9),
+        plot.title = element_text(hjust = 0.5)) +
+  coord_fixed()
+
+plot(ggplot_class_diff)
+
+
+###Sentinel 2 images of Quito and surrounding area
+##    # Data downloaded for the years 2016 and 2024 in the month of November
+# The images downloaded were level 2A, and contained 15% cloud cover
+# The following bands were downloaded: b2, b3, b4, b8
+
+# Importing bands for 2016
+
+b2_2016 <- rast("2016-11-28-00_00_2016-11-28-23_59_Sentinel-2_L2A_B02_(Raw).tiff")
+b3_2016 <- rast("2016-11-28-00_00_2016-11-28-23_59_Sentinel-2_L2A_B03_(Raw).tiff")
+b4_2016 <- rast("2016-11-28-00_00_2016-11-28-23_59_Sentinel-2_L2A_B04_(Raw).tiff")
+b8_2016 <- rast("2016-11-28-00_00_2016-11-28-23_59_Sentinel-2_L2A_B08_(Raw).tiff")
+
+
+# creating a stack with all the bands
+# stacksent: 
+# band2 blue element 1, stacksent[[1]] 
+# band3 green element 2, stacksent[[2]]
+# band4 red element 3, stacksent[[3]]
+# band8 nir element 4, stacksent[[4]]
+
+stacksent <- rast(list(b2_2016, b3_2016, b4_2016, b8_2016))
+
+summary(stacksent)
+
+
+### creating RGB composites for 2016
+par(mfrow=c(1,2))
+plotRGB(stacksent, r = 3, g = 2, b = 1, stretch="lin", main = "True Color Composite 2016")
+# Plotting the false color composite (near-infrared, red, green)
+plotRGB(stacksent, r = 4, g = 3, b = 2, stretch="lin",main = "False Color Composite 2016")
+# the stretch = "lin" parameter is for displaying the images better (stretches the histogram)
+
+# NDVI for 2016:
+# NDVI formula: N D V I = (B 8 − B 4) / (B 8 + B 4)
+NDVI.2016 = (stacksent[[4]] - stacksent[[3]]) / (stacksent[[4]] + stacksent[[3]])
+plot(NDVI.2016, main = "NDVI 2016")
+
+# Importing bands for 2024
+
+b2_2024 <- rast("2024-11-01-00_00_2024-11-01-23_59_Sentinel-2_L2A_B02_(Raw).tiff")
+b3_2024 <- rast("2024-11-01-00_00_2024-11-01-23_59_Sentinel-2_L2A_B03_(Raw).tiff")
+b4_2024 <- rast("2024-11-01-00_00_2024-11-01-23_59_Sentinel-2_L2A_B04_(Raw).tiff")
+b8_2024 <- rast("2024-11-01-00_00_2024-11-01-23_59_Sentinel-2_L2A_B08_(Raw).tiff")
+
+# creating a stack with all the bands
+# stacksent2: 
+# band2 blue element 1, stacksent[[1]] 
+# band3 green element 2, stacksent[[2]]
+# band4 red element 3, stacksent[[3]]
+# band8 nir element 4, stacksent[[4]]
+stacksent2 <- c(b2_2024, b3_2024, b4_2024, b8_2024)
+
+### creating RGB composites for 2016
+par(mfrow=c(1,2))
+plotRGB(stacksent2, r = 3, g = 2, b = 1, stretch="lin", main = "True Color Composite 2024")
+# Plotting the false color composite (near-infrared, red, green)
+plotRGB(stacksent2, r = 4, g = 3, b = 2, stretch="lin",main = "False Color Composite 2024")
+# the stretch = "lin" parameter is for displaying the images better (stretches the histogram)
+
+# NDVI for 2023:
+# NDVI formula: N D V I = (B 8 − B 4) / (B 8 + B 4)
+NDVI.2024 = (stacksent2[[4]] - stacksent2[[3]]) / (stacksent2[[4]] + stacksent2[[3]])
+plot(NDVI.2024, main="NDVI 2024")
+
+
+#visualizing NDVI for both years
+par(mfrow=c(1,2))
+plot(NDVI.2016, 
+     main = "NDVI 2016", 
+     xlab = "Longitude", 
+     ylab = "Latitude")
+
+plot(NDVI.2024, 
+     main = "NDVI 2024", 
+     xlab = "Longitude", 
+     ylab = "Latitude")
+
+
+# Cropping both rasters to a new extent (reduced cloud cover)
+# Defining extent
+extent.ndvi <- c(-78.62, -78.42, -0.42, -0.22)
+NDVI.2016.c <- crop(NDVI.2016,extent.ndvi)
+NDVI.2024.c <- crop(NDVI.2024,extent.ndvi)
+
+
+# Plotting the NDVI for 2016
+# Data needs to be converted to a data frame for ggplot
+ndvi_df_2016 <- as.data.frame(NDVI.2016.c, xy = TRUE)
+colnames(ndvi_df_2016) <- c("x", "y", "NDVI")
+
+
+
+p1 <- ggplot() +
+  geom_raster(data = ndvi_df_2016, aes(x = x, y = y, fill = NDVI)) +
+  scale_fill_viridis_c(option = "D", na.value = "transparent", limits = c(-1, 1)) +  # Using a color palette suitable for NDVI
+  labs(title = "NDVI 2016", fill = "NDVI", x = "Longitude", y = "Latitude") +
+  coord_equal() +
+  theme_minimal()
+
+
+# Plotting the NDVI for 2024
+# Data needs to be converted to a data frame for ggplot
+ndvi_df_2024 <- as.data.frame(NDVI.2024.c, xy = TRUE)
+colnames(ndvi_df_2024) <- c("x", "y", "NDVI")
+
+
+p2 <- ggplot() +
+  geom_raster(data = ndvi_df_2024, aes(x = x, y = y, fill = NDVI)) +
+  scale_fill_viridis_c(option = "D", na.value = "transparent",limits = c(-1, 1)) +  # Using a color palette suitable for NDVI
+  labs(title = "NDVI 2024", fill = "NDVI", x = "Longitude", y = "Latitude") +
+  coord_equal() +
+  theme_minimal()
+
+# Arranging both plots together for visualization
+ndvi.plots <- p1 + p2
+plot(ndvi.plots)
+
+# Calculating NDVI difference between the years 2016 and 2024
+NDVI_diff <- NDVI.2024.c - NDVI.2016.c
+ndvi_diff_df <- as.data.frame(NDVI_diff, xy = TRUE)
+colnames(ndvi_diff_df) <- c("Longitude", "Latitude", "NDVI_Difference")
+
+# Calculating the maximum and minimum values to be added to the legend
+min_val <- min(ndvi_diff_df$NDVI_Difference, na.rm = TRUE)
+max_val <- max(ndvi_diff_df$NDVI_Difference, na.rm = TRUE)
+
+# Plotting the NDVI Difference using ggplot
+ggplot_NDVI_diff <- ggplot() + 
+  geom_raster(data = ndvi_diff_df, aes(x = Longitude, y = Latitude, fill = NDVI_Difference)) +
+  scale_fill_viridis(option = "viridis",
+                     breaks = c(min_val, 0, max_val),  
+                     labels = scales::label_number(accuracy = 0.01),  # to round to two decimal points
+                     na.value = "transparent") +
+  labs(title = "NDVI Difference (2024 - 2016)", x = "Longitude", y = "Latitude", fill = "NDVI Difference") +
+  coord_equal() +
+  theme_minimal()
+
+#visualizing the NDVI change
+plot(ggplot_NDVI_diff)
+
