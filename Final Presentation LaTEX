@@ -1,1 +1,162 @@
+\documentclass{beamer}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\usetheme{Berlin}
+\usecolortheme{seahorse}
+
+\title{Spatial Ecology in R}
+\subtitle{Forest Cover and NDVI Analysis in Quito, Ecuador}
+\author{Isabel Becdach}
+\institute{Alma Mater Studiorum -- University of Bologna}
+\date{September 2025}
+
+\begin{document}
+
+\maketitle
+
+\AtBeginSection[]{
+\begin{frame}
+\frametitle{Content}
+\tableofcontents[currentsection]
+\end{frame}
+}
+
+% ----------------------
+\section{Introduction}
+% ----------------------
+
+\begin{frame}{Aim of the Project}
+The aim of this project is to analyze changes in vegetation cover and health 
+in Ecuador, with a focus on the city of Quito and its surroundings. 
+
+\bigskip
+
+Data used:
+\begin{itemize}
+    \item Copernicus Global Land Service: \textbf{FCOVER} data (1999 and 2020)
+    \item Sentinel-2 imagery (2016 and 2024, November, L2A level)
+\end{itemize}
+\end{frame}
+
+% ----------------------
+\section{Methods}
+% ----------------------
+
+\begin{frame}{R Packages Used}
+For the analysis, the following R packages were used:
+
+\begin{itemize}
+  \item \textbf{terra} – import, crop, resample, and manipulate raster data
+  \item \textbf{patchwork} – combine multiple plots
+  \item \textbf{ggplot2} – create customizable graphs
+  \item \textbf{viridis} – apply colorblind-friendly palettes
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Analytical Steps}
+\begin{enumerate}
+    \item Download and import raster datasets (\texttt{rast()})
+    \item Apply scale factor to FCOVER values
+    \item Crop rasters to Ecuador and Quito extents
+    \item Compute changes in FCOVER 
+    \item Classify pixel changes: increase, decrease, no change
+    \item Import Sentinel-2 bands and create composites (\texttt{plotRGB()})
+    \item Compute NDVI: \((NIR - Red) / (NIR + Red)\)
+    \item Compare NDVI values for 2016 and 2024
+    \item Visualize changes with maps and difference rasters
+\end{enumerate}
+\end{frame}
+
+% ----------------------
+\section{Results: Forest Cover - Ecuador (1999--2020)}
+% ----------------------
+
+\begin{frame}{FCOVER 1999 vs 2020 - Ecuador}
+\centering
+\includegraphics[width=1\textwidth]{FCOVER 1999 2020.png}
+\end{frame}
+
+\begin{frame}{FCOVER Change 1999--2020 - Ecuador}
+\centering
+\includegraphics[width=\paperwidth]{FCOVER change 1999 2020.png}
+\end{frame}
+
+% ----------------------
+\section{Results: Cropped Area - Quito}
+% ----------------------
+
+\begin{frame}{Area of Interest - Quito, Ecuador}
+\centering
+\includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{dc4eb828-e79e-444b-8c53-7f69fdc89de9.JPG}
+\end{frame}
+
+\begin{frame}{Cropped FCOVER 1999 vs 2020 - Quito}
+\centering
+\includegraphics[width=1\textwidth]{Cropped FCOVER 1999 2020.png}
+\end{frame}
+
+\begin{frame}{Cropped FCOVER Change 1999--2020 - Quito}
+\centering
+\includegraphics[width=0.7\textwidth]{FCOVER cropped change 1999 2020.png}
+\end{frame}
+
+\begin{frame}{Pixel-Based FCOVER Change 1999--2020 - Quito}
+\centering
+\includegraphics[width=0.7\textwidth]{FCOVER change pixel 1999 2020.png}
+\end{frame}
+
+% ----------------------
+\section{Results: Sentinel-2 Composites}
+% ----------------------
+
+\begin{frame}{Sentinel-2 Composite 2016}
+\centering
+\includegraphics[width=0.7\textwidth]{composite 2016.png}
+\end{frame}
+
+\begin{frame}{Sentinel-2 Composite 2024}
+\centering
+\includegraphics[width=0.7\textwidth]{composite 2024.png}
+\end{frame}
+
+% ----------------------
+\section{Results: NDVI Analysis}
+% ----------------------
+
+\begin{frame}{NDVI 2016 vs 2024 - Quito}
+\centering
+\includegraphics[width=1\textwidth]{NDVI 2016 2024.png}
+\end{frame}
+
+\begin{frame}{Cropped NDVI 2016 and 2024 (reduced cloud cover)}
+\centering
+\includegraphics[width=1\textwidth]{cropped NDVI 26 2024.png}
+\end{frame}
+
+\begin{frame}{NDVI Difference (2024--2016)}
+\centering
+\includegraphics[width=0.7\textwidth]{NDVI diff 2024-2016.png}
+\end{frame}
+
+% ----------------------
+\section{Discussion}
+% ----------------------
+
+\begin{frame}{Discussion}
+\begin{itemize}
+  \item FCOVER provides insight into long-term vegetation dynamics.
+  \item Cropping to Quito reduced cloud contamination and increased interpretability.
+  \item Sentinel-2 composites differentiate vegetation and built-up land.
+  \item NDVI confirms changes in vegetation health between 2016 and 2024.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\centering
+\Huge Thanks for your attention!
+\end{frame}
+
+\end{document}
 
