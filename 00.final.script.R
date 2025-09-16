@@ -13,8 +13,7 @@
 #07.2 External data import
 #08 Copernicus data
 #09 Classification
-#10 Variability
-#11 Principle component analysis
+#10 Variability and principle component analysis
 
 #-----------------------
 #01 Beginning
